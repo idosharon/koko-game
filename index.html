@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <style>
+      #koko {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        border: 5px solid orange;
+      }
+      .container {
+        position: absolute;
+        bottom: 0;
+      }
+      .container span {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border: 5px solid black;
+      }
+      .fruit {
+        background-color: green;
+      }
+      .bomb {
+        background-color: red;
+      }
+
+    </style>
+    <script src="jquery-3.2.1.min.js"></script>
+
+  </head>
+  <body>
+    <div class="container">
+      <span></span></span><span id="koko"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <script>
+      var koko = document.getElementById('koko');
+      var $koko = $(koko);
+      
+      koko.style.width  = 10;
+      koko.style.height = 10;
+      var stopGame = false;
+      var gameOver = () => {
+        $('body').append("GAME OVER")
+        $koko.css({backgroundColor: 'darkred', border: ''});
+        stopGame = true;
+
+      }
+      var meet = (e) => {
+        let h_ = parseInt(koko.style.height);
+        let w_ = parseInt(koko.style.width);
+        if (e.classList.contains('fruit')) {
+          koko.style.height = h_ + 10 + 'px';
+          koko.style.width = w_ + 10 + 'px';
+          e.remove();
+          return false;
+        }
+        if (e.classList.contains('bomb')) {
+          return gameOver();
+          if (h_ == 10) return gameOver() && false;
+          koko.style.height = (h_ - 10) + 'px';
+          e.remove();
+          return false;
+        }
+        return true;
+      }
+      
+      // var jump = (e) => {
+      //   let up = setInterval(() => {
+      //     let b = parseInt(koko.style.bottom) || 0;
+      //     koko.style.bottom = b + 1;
+      //     if (b > 20) {
+      //       window.clearInterval(up);
+      //       let down = setInterval(() => {
+      //         let b = parseInt(koko.style.bottom) || 0;
+      //         koko.style.bottom = b - 1;
+      //         if (b < 0) {
+      //           koko.style.bottom = '0px';
+      //           window.clearInterval(down);
+      //         }
+      //       }, 100);
+      //     }
+      //   }, 100);
+      // }
+      var makeFun = () => {
+        // if (stopGame) return;
+        let spans = $('.container span:not(#koko)')
+        let foo = Math.round(Math.random() * (spans.length - 1));
+        let form = (Math.random() > 0.5) ? 'fruit' : 'bomb';
+        if (!spans[foo]) console.log(foo);
+        spans[foo].classList = [];
+        spans[foo].classList.add(form);
+        
+      }
+      setInterval(makeFun, 200);
+      document.addEventListener('keydown', (e) => {
+        if (stopGame) return;
+        let j;
+        switch (e.key) {
+          case 'ArrowUp':
+            jump();
+            break;
+          case 'ArrowRight':
+            j = koko.nextElementSibling;
+            j && meet(j) && koko.parentNode.insertBefore(j, koko);
+            break;
+          case 'ArrowLeft':
+            j = koko.previousElementSibling;
+            meet(j);
+            j && meet(j) && koko.parentNode.insertBefore(koko, j);
+            break;
+        }
+      })
+    </script>
+  </body>
+</html>
