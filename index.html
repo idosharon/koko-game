@@ -23,6 +23,9 @@
       .bomb {
         background-color: red;
       }
+      #gameover {
+        font-size: 30px;
+      }
 
     </style>
     <script src="jquery-3.2.1.min.js"></script>
@@ -40,7 +43,10 @@
       koko.style.height = 10;
       var stopGame = false;
       var gameOver = () => {
-        $('body').append("GAME OVER")
+        if ($('#gameover')[0]) return false;
+        let h_ = parseInt(koko.style.height) - 10;
+
+        $('body').append(`<div id="gameover">GAME OVER - ${h_} points</div>`)
         $koko.css({backgroundColor: 'darkred', border: ''});
         stopGame = true;
 
