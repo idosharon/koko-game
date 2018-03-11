@@ -1,0 +1,143 @@
+<html>
+  <head>
+    <style>
+      #koko {
+        /*position: relative;*/
+        border: 5px solid orange;
+        transition: height 0.5s, width 0.5s;
+      }
+      .score {
+        position: absolute;
+        font-size: 30px;
+        top: 10px;
+        left: 10px;
+      }
+      .container {
+        position: absolute;
+        bottom: 0;
+      }
+      .container span {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        border: 5px solid black;
+      }
+      .fruit {
+        background-color: green;
+      }
+      .bomb {
+        background-color: red;
+      }
+
+    </style>
+    <script src="jquery-3.2.1.min.js"></script>
+
+  </head>
+  <body>
+    <div class="score"></div>
+    <div class="container">
+    </div>
+    <script>
+    
+      let startUp = () => {
+
+        let container = $('.container');
+        let iC = 10;
+        let iO = 10;
+        let score = 0;
+        container.css({width: iC*30});
+        for (let y=0; y<iO; y++) {
+          for (let i=0; i<iC; i++) {
+            container.append(`<span data-x="${i}" data-y="${y}" title="${i},${y}">`);
+          }
+        }
+        let p = Math.round((iC - 1) * Math.random());
+        $(`.container span:nth-child(${p + 1})`).attr('id','koko')
+        
+        let koko = document.getElementById('koko');
+
+        let stopGame = false;
+        let gameOver = () => {
+          let koko = document.getElementById('koko');
+          $('.score').html(`${score} points - GAME OVER`);
+          koko.style.backgroundColor = 'darkred'; //, border: ''});
+          stopGame = true;
+        }
+        
+        let meet = (e) => {
+          let koko = document.getElementById('koko');
+          let h_ = parseInt(koko.style.height);
+          let w_ = parseInt(koko.style.width);
+          if (e.classList.contains('fruit')) {
+            console.log('fruit');
+            score += 10;
+            e.style.opacity = 0.5;
+            e.classList.remove('fruit');
+
+            $('.score').html(`${score} points`);
+            
+            return false;
+          }
+          if (e.classList.contains('bomb')) return gameOver();
+          return true;
+        }
+        
+        var makeFun = () => {
+          // if (stopGame) return;
+          let spans = $('.container span:not(#koko)')
+          if (spans.length === 0) return gameOver();
+          let foo = Math.round(Math.random() * (spans.length - 1));
+          let form = (Math.random() > 0.5) ? 'fruit' : 'bomb';
+          if (!spans[foo]) console.log(foo);
+          spans[foo].classList = [];
+          spans[foo].classList.add(form);
+          
+        }
+        setInterval(makeFun, 200);
+        
+        document.addEventListener('keydown', (e) => {
+          if (stopGame) return;
+          let j;
+          let koko = document.getElementById('koko');
+          switch (e.key) {
+            case 'ArrowUp':
+              j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 - 1}"]`);
+
+              if (!j) return;
+              meet(j);
+              koko.id = '';
+              j.id = 'koko';
+              break;
+            case 'ArrowDown':
+              j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 + 1}"]`);
+
+              if (!j) return;
+              meet(j);
+              koko.id = '';
+              j.id = 'koko';
+              break;
+            case 'ArrowRight':
+              j = document.querySelector(`.container span[data-x="${koko.dataset.x*1+1}"][data-y="${koko.dataset.y}"]`);
+
+              if (!j) return;
+              meet(j);
+              koko.id = '';
+              j.id = 'koko';
+              break;
+            case 'ArrowLeft':
+              j = document.querySelector(`.container span[data-x="${koko.dataset.x*1-1}"][data-y="${koko.dataset.y}"]`);
+
+              if (!j) return;
+              meet(j);
+              koko.id = '';
+              j.id = 'koko';
+              break;
+          }
+        })
+      }
+      $(() => {
+        startUp();
+      });
+    </script>
+  </body>
+</html>
