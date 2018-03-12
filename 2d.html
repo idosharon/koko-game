@@ -71,9 +71,13 @@
           if (e.classList.contains('fruit')) {
             console.log('fruit');
             score += 10;
-            e.style.opacity = 0.5;
-            e.classList.remove('fruit');
-
+            // e.style.opacity = 0.5;
+            // e.classList.remove('fruit');
+            l = e.nextSibling;
+            if (!l) l = e.previousSibling;
+            $(e).remove();
+            l.id = 'koko';
+            
             $('.score').html(`${score} points`);
             
             return false;

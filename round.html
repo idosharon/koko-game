@@ -1,0 +1,145 @@
+<html>
+  <head>
+    <style>
+      #koko {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        border: 5px solid orange;
+        transition: height 0.5s, width 0.5s;
+      }
+      .bigContainer {
+
+      }
+      .score {
+        position: absolute;
+        left: 48%;
+        top: 42%;
+        font-size: 60px;
+        width: 100px;
+        height: 100px;
+        
+      }
+      .container {
+        position: absolute;
+        left: 50%;
+        top: 25%;
+        /*border: 1px solid red;*/
+        /*position: absolute;*/
+        /*bottom: 200px;*/
+      }
+      .container div {
+        font: 26px Monaco, MonoSpace;
+        height: 200px;
+        position: absolute;
+        width: 20px;
+        left: 0;
+        top: 0;
+        transform-origin: bottom center;
+      }
+      .container div > span {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border: 5px solid black;
+      }
+      .fruit {
+        background-color: green;
+      }
+      .bomb {
+        background-color: red;
+      }
+      #gameover {
+        font-size: 30px;
+      }
+
+    </style>
+    <script src="jquery-3.2.1.min.js"></script>
+
+  </head>
+  <body>
+    <div class="bigContainer">
+      <div class="score"></div>
+      <div class="container">
+      </div>
+    </div>
+    <script>
+      for (let i=0; i<60; i++) $('.container').append(`<div data-i="${i}"><span></span></div>`);
+      $('.container div > span')[2].id = 'koko';
+      var koko = document.getElementById('koko');
+      var $koko = $(koko);
+      $('.container div').each((i, e) => {
+        // console.log(e);
+        e.style.transform = `rotate(${6*i}deg)`;
+      })
+
+      let score = 0;
+      var stopGame = false;
+      var gameOver = () => {
+        if ($('#gameover')[0]) return false;
+        $('body').append(`<div id="gameover">GAME OVER - ${score} points</div>`)
+        $koko.css({backgroundColor: 'darkred', border: ''});
+        stopGame = true;
+
+      }
+      var meet = (e) => {
+        console.log('meet', e);
+        if (e.classList.contains('fruit')) {
+          score += 10;
+          $('.score').html(score)
+          e.classList = '';
+          e.style.backgroundColor = 'orange';
+          e.dataset.done = true;
+          return false;
+        }
+        if (e.classList.contains('bomb')) return gameOver();
+        return true;
+      }
+      
+      var makeFun = () => {
+        // if (stopGame) return;
+        let spans = $('.container span:not(#koko)')
+        let foo = Math.round(Math.random() * (spans.length - 1));
+        let form = (Math.random() > 0.5) ? 'fruit' : 'bomb';
+        if (!spans[foo]) console.log(foo);
+        if (spans[foo].dataset.done) return false;
+        spans[foo].classList = [];
+        spans[foo].classList.add(form);
+        
+      }
+      let container = document.querySelector('.container');
+      setInterval(makeFun, 200);
+      document.addEventListener('keydown', (e) => {
+        if (stopGame) return;
+        let j, k2;
+        var koko = document.getElementById('koko');
+        switch (e.key) {
+          case 'ArrowUp':
+            jump();
+            break;
+          case 'ArrowRight':
+            j = koko.parentNode.nextElementSibling;
+            if (!j) j = $('.container div')[0]
+            k2 = j.querySelector('span');
+            meet(k2);
+            koko.id = '';
+            k2.id = 'koko';
+            break;
+          case 'ArrowLeft':
+            j = koko.parentNode.previousElementSibling;
+            if (!j) j = $('.container div')[59]
+            k2 = j.querySelector('span');
+            meet(k2);
+            koko.id = '';
+            k2.id = 'koko';
+            break;
+
+            // j = koko.parentNode.previousElementSibling;
+            // meet(j);
+            // j && meet(j) && koko.parentNode.insertBefore(koko, j);
+            // break;
+        }
+      })
+    </script>
+  </body>
+</html>
