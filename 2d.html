@@ -119,6 +119,7 @@
         setInterval(makeFun, 200);
         
         let kLeft = () => {
+          if (stopGame) return;
           let j;
           let koko = document.getElementById('koko');
           j = document.querySelector(`.container span[data-x="${koko.dataset.x*1-1}"][data-y="${koko.dataset.y}"]`);
@@ -129,6 +130,7 @@
           j.id = 'koko';
         }
         let kRight = () => {
+          if (stopGame) return;
           let j;
           let koko = document.getElementById('koko');
           j = document.querySelector(`.container span[data-x="${koko.dataset.x*1+1}"][data-y="${koko.dataset.y}"]`);
@@ -140,6 +142,7 @@
           
         }
         let kUp = () => {
+          if (stopGame) return;
           let j;
           let koko = document.getElementById('koko');
           j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 - 1}"]`);
@@ -150,6 +153,7 @@
           j.id = 'koko';
         }
         let kDown = () => {
+          if (stopGame) return;
           let j;
           let koko = document.getElementById('koko');
           j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 + 1}"]`);
@@ -166,7 +170,6 @@
         $('.pakadim .d').on('click', kDown);
         
         document.addEventListener('keydown', (e) => {
-          if (stopGame) return;
           switch (e.key) {
             case 'ArrowUp':
               kUp();
