@@ -52,12 +52,26 @@
       #gameover {
         font-size: 30px;
       }
+      .pakadim {
+        position: fixed;
+        left: 0;
+        top: 0;
+        font-size: 120px;
+      }
+      .pakadim span {
+        cursor: pointer;
+      }
 
     </style>
     <script src="jquery-3.2.1.min.js"></script>
 
   </head>
   <body>
+    <div class="pakadim">
+      <span class="l">&laquo;</span>
+      <span class="r">&raquo;</span>
+    </div>
+    
     <div class="bigContainer">
       <div class="score"></div>
       <div class="container">
@@ -83,7 +97,7 @@
 
       }
       var meet = (e) => {
-        console.log('meet', e);
+        // console.log('meet', e);
         if (e.classList.contains('fruit')) {
           score += 10;
           $('.score').html(score)
@@ -93,6 +107,8 @@
           e.dataset.done = true;
           return false;
         }
+        // console.log(e);
+        // if (e.classList.contains('bomb')) console.log('booF!');
         if (e.classList.contains('bomb')) return gameOver();
         return true;
       }
@@ -110,29 +126,42 @@
       }
       let container = document.querySelector('.container');
       setInterval(makeFun, 200);
-      document.addEventListener('keydown', (e) => {
+
+      let kLeft = () => {
         if (stopGame) return;
         let j, k2;
         var koko = document.getElementById('koko');
+        j = koko.parentNode.previousElementSibling;
+        if (!j) j = $('.container div')[59]
+        k2 = j.querySelector('span');
+        meet(k2);
+        koko.id = '';
+        k2.id = 'koko';
+      }
+      
+      let kRight = () => {
+        if (stopGame) return;
+        let j, k2;
+        var koko = document.getElementById('koko');
+        j = koko.parentNode.nextElementSibling;
+        if (!j) j = $('.container div')[0]
+        k2 = j.querySelector('span');
+        meet(k2);
+        koko.id = '';
+        k2.id = 'koko';
+      }
+
+      $('.pakadim .l').on('click', kLeft);
+      $('.pakadim .r').on('click', kRight);
+      
+      document.addEventListener('keydown', (e) => {
+        if (stopGame) return;
         switch (e.key) {
-          case 'ArrowUp':
-            jump();
-            break;
           case 'ArrowRight':
-            j = koko.parentNode.nextElementSibling;
-            if (!j) j = $('.container div')[0]
-            k2 = j.querySelector('span');
-            meet(k2);
-            koko.id = '';
-            k2.id = 'koko';
+            kRight();
             break;
           case 'ArrowLeft':
-            j = koko.parentNode.previousElementSibling;
-            if (!j) j = $('.container div')[59]
-            k2 = j.querySelector('span');
-            meet(k2);
-            koko.id = '';
-            k2.id = 'koko';
+            kLeft();
             break;
 
             // j = koko.parentNode.previousElementSibling;

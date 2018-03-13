@@ -27,12 +27,24 @@
       #gameover {
         font-size: 30px;
       }
-
+      .pakadim {
+        position: fixed;
+        left: 0;
+        top: 0;
+        font-size: 120px;
+      }
+      .pakadim span {
+        cursor: pointer;
+      }
     </style>
     <script src="jquery-3.2.1.min.js"></script>
 
   </head>
   <body>
+    <div class="pakadim">
+      <span class="l">&laquo;</span>
+      <span class="r">&raquo;</span>
+    </div>
     <div class="container">
       <span></span></span><span id="koko"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
     </div>
@@ -99,21 +111,27 @@
         
       }
       setInterval(makeFun, 200);
+      let kRight = () => {
+        j = koko.nextElementSibling;
+        j && meet(j) && koko.parentNode.insertBefore(j, koko);
+      }
+      let kLeft = () => {
+        j = koko.previousElementSibling;
+        meet(j);
+        j && meet(j) && koko.parentNode.insertBefore(koko, j);
+      }
+      $('.pakadim .l').on('click', kLeft);
+      $('.pakadim .r').on('click', kRight);
+      
       document.addEventListener('keydown', (e) => {
         if (stopGame) return;
         let j;
         switch (e.key) {
-          case 'ArrowUp':
-            jump();
-            break;
           case 'ArrowRight':
-            j = koko.nextElementSibling;
-            j && meet(j) && koko.parentNode.insertBefore(j, koko);
+            kRight();
             break;
           case 'ArrowLeft':
-            j = koko.previousElementSibling;
-            meet(j);
-            j && meet(j) && koko.parentNode.insertBefore(koko, j);
+            kLeft();
             break;
         }
       })

@@ -28,12 +28,27 @@
       .bomb {
         background-color: red;
       }
-
+      .pakadim {
+        position: fixed;
+        left: 0;
+        top: 40px;
+        font-size: 120px;
+      }
+      .pakadim span {
+        cursor: pointer;
+      }
     </style>
     <script src="jquery-3.2.1.min.js"></script>
 
   </head>
   <body>
+    <div class="pakadim">
+      <span class="l">&laquo;</span>
+      <span class="r">&raquo;</span>
+      <span class="u">^</span>
+      <span class="d">v</span>
+    </div>
+
     <div class="score"></div>
     <div class="container">
     </div>
@@ -73,10 +88,11 @@
             score += 10;
             // e.style.opacity = 0.5;
             // e.classList.remove('fruit');
-            l = e.nextSibling;
-            if (!l) l = e.previousSibling;
-            $(e).remove();
-            l.id = 'koko';
+            // l = e.nextSibling;
+            // if (!l) l = e.previousSibling;
+            $(e).css({opacity:0.2});
+            // l.id = 'koko';
+            e.id = 'koko';
             
             $('.score').html(`${score} points`);
             
@@ -99,42 +115,67 @@
         }
         setInterval(makeFun, 200);
         
-        document.addEventListener('keydown', (e) => {
-          if (stopGame) return;
+        let kLeft = () => {
           let j;
           let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x*1-1}"][data-y="${koko.dataset.y}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+        }
+        let kRight = () => {
+          let j;
+          let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x*1+1}"][data-y="${koko.dataset.y}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+          
+        }
+        let kUp = () => {
+          let j;
+          let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 - 1}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+        }
+        let kDown = () => {
+          let j;
+          let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 + 1}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+        }
+
+        $('.pakadim .l').on('click', kLeft);
+        $('.pakadim .r').on('click', kRight);
+        $('.pakadim .u').on('click', kUp);
+        $('.pakadim .d').on('click', kDown);
+        
+        document.addEventListener('keydown', (e) => {
+          if (stopGame) return;
           switch (e.key) {
             case 'ArrowUp':
-              j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 - 1}"]`);
-
-              if (!j) return;
-              meet(j);
-              koko.id = '';
-              j.id = 'koko';
+              kUp();
               break;
             case 'ArrowDown':
-              j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 + 1}"]`);
-
-              if (!j) return;
-              meet(j);
-              koko.id = '';
-              j.id = 'koko';
+              kDown();
               break;
             case 'ArrowRight':
-              j = document.querySelector(`.container span[data-x="${koko.dataset.x*1+1}"][data-y="${koko.dataset.y}"]`);
-
-              if (!j) return;
-              meet(j);
-              koko.id = '';
-              j.id = 'koko';
+              kRight();
               break;
             case 'ArrowLeft':
-              j = document.querySelector(`.container span[data-x="${koko.dataset.x*1-1}"][data-y="${koko.dataset.y}"]`);
-
-              if (!j) return;
-              meet(j);
-              koko.id = '';
-              j.id = 'koko';
+              kLeft();
               break;
           }
         })
