@@ -43,6 +43,9 @@
         left: 0;
         top: 60px;
         font-size: 40px;
+        padding:40px 20px 40px 0px;
+        width:340px;
+        text-align: center;
       }
       .pakadim span {
         cursor: pointer;
@@ -82,7 +85,16 @@
 		position: relative; top: -3px;
 
 }
-
+.gameOverMessage {
+  color:#d80f3a;
+  font-family:Arial, sans-serif;
+  font-size:60px;
+}
+.scoreMessage {
+  color:#767676;
+  font-family:Arial, sans-serif;
+  font-size:40px;
+}
 @media only screen and (max-width: 700px) {
   body {
     zoom: 50%;
@@ -94,7 +106,7 @@
 
   </head>
   <body>
-    <div class="pakadim" style="padding:40px 20px 40px 0px;width:320px;text-align: center;">
+    <div class="pakadim">
       <span class="l"><i class="arrow left"></i></span>
       <span class="r"><i class="arrow right"></i></span>
       <span class="u"><i class="arrow up"></i></span>
@@ -126,7 +138,7 @@
         let stopGame = false;
         let gameOver = () => {
           let koko = document.getElementById('koko');
-          $('.score').html(`<span style="color:#d80f3a;font-family:Arial, sans-serif; font-size:60px">${score} Points - GAME OVER</span>`);
+          $('.score').html(`<span class="gameOverMessage">${score} Points - GAME OVER</span>`);
           koko.style.backgroundColor = 'darkred'; //, border: ''});
           stopGame = true;
         }
@@ -146,7 +158,7 @@
             // l.id = 'koko';
             e.id = 'koko';
             
-            $('.score').html(`<span style="color:#767676;font-family:Arial, sans-serif; font-size:40px">${score} points`);
+            $('.score').html(`<span class="scoreMessage">${score} points`);
             
             return false;
           }
