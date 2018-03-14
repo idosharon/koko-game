@@ -1,0 +1,243 @@
+<html>
+  <head>
+    <title>2d koko noa</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <style>
+      #koko {
+        /*position: relative;*/
+        background-color: orange;border:2px solid orange;
+        transition: height 0.5s, width 0.5s;
+      }
+      .score {
+        position: absolute;
+        font-size: 30px;
+        top: 10px;
+        left: 10px;
+      }
+		
+      .fruit {
+        background-image: url(apple.png);background-position:center; background-repeat: no-repeat;
+		 
+      }
+      .bomb {
+        background-image: url(bomb.png);background-position:center;background-repeat: no-repeat;
+      }
+		.container {
+        position: relative;
+        top: 200;
+		  
+      }
+      .container span {
+        width: 60px;
+        height: 60px;
+        display: inline-block;
+        border: 2px solid #E2E5F0;
+		  border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;
+		  margin: 1px;
+		
+      }
+      
+      .pakadim {
+        position: fixed;
+        left: 0;
+        top: 60px;
+        font-size: 40px;
+      }
+      .pakadim span {
+        cursor: pointer;
+		background-color:#4DAED6;
+		padding:10px 20px 10px;
+		  border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;
+     }
+		i {
+    border: solid white;
+    border-width: 0 10px 10px 0;
+    display: inline-block;
+    padding: 10px;
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+		position: relative; right: 4px; top: 2px;
+
+}
+
+.left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+	position: relative; left: 4px; top: 2px;
+}
+
+.up {
+    transform: rotate(-135deg); transform:
+    -webkit-transform: rotate(-135deg);
+	position: relative; top:9px
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+		position: relative; top: -3px;
+
+}
+
+@media only screen and (max-width: 700px) {
+  body {
+    zoom: 50%;
+  }
+}
+
+    </style>
+    <script src="http://dorkalev.com/koko-game/jquery-3.2.1.min.js"></script>
+
+  </head>
+  <body>
+    <div class="pakadim" style="padding:40px 20px 40px 0px;width:320px;text-align: center;">
+      <span class="l"><i class="arrow left"></i></span>
+      <span class="r"><i class="arrow right"></i></span>
+      <span class="u"><i class="arrow up"></i></span>
+      <span class="d"><i class="arrow down"></i></span>
+    </div>
+
+    <div class="score"></div>
+    <div class="container">
+    </div>
+    <script>
+    
+      let startUp = () => {
+
+        let container = $('.container');
+        let iC = 10;
+        let iO = 10;
+        let score = 0;
+        container.css({width: iC*70});
+        for (let y=0; y<iO; y++) {
+          for (let i=0; i<iC; i++) {
+            container.append(`<span data-x="${i}" data-y="${y}" title="${i},${y}">`);
+          }
+        }
+        let p = Math.round((iC - 1) * Math.random());
+        $(`.container span:nth-child(${p + 1})`).attr('id','koko')
+        
+        let koko = document.getElementById('koko');
+
+        let stopGame = false;
+        let gameOver = () => {
+          let koko = document.getElementById('koko');
+          $('.score').html(`<span style="color:#d80f3a;font-family:Arial, sans-serif; font-size:60px">${score} Points - GAME OVER</span>`);
+          koko.style.backgroundColor = 'darkred'; //, border: ''});
+          stopGame = true;
+        }
+        
+        let meet = (e) => {
+          let koko = document.getElementById('koko');
+          let h_ = parseInt(koko.style.height);
+          let w_ = parseInt(koko.style.width);
+          if (e.classList.contains('fruit')) {
+            console.log('fruit');
+            score += 10;
+            // e.style.opacity = 0.5;
+            // e.classList.remove('fruit');
+            // l = e.nextSibling;
+            // if (!l) l = e.previousSibling;
+            $(e).css({opacity:0.2});
+            // l.id = 'koko';
+            e.id = 'koko';
+            
+            $('.score').html(`<span style="color:#767676;font-family:Arial, sans-serif; font-size:40px">${score} points`);
+            
+            return false;
+          }
+          if (e.classList.contains('bomb')) return gameOver();
+          return true;
+        }
+        
+        var makeFun = () => {
+          // if (stopGame) return;
+          let spans = $('.container span:not(#koko)')
+          if (spans.length === 0) return gameOver();
+          let foo = Math.round(Math.random() * (spans.length - 1));
+          let form = (Math.random() > 0.5) ? 'fruit' : 'bomb';
+          if (!spans[foo]) console.log(foo);
+          spans[foo].classList = [];
+          spans[foo].classList.add(form);
+          
+        }
+        setInterval(makeFun, 200);
+        
+        let kLeft = () => {
+          if (stopGame) return;
+          let j;
+          let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x*1-1}"][data-y="${koko.dataset.y}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+        }
+        let kRight = () => {
+          if (stopGame) return;
+          let j;
+          let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x*1+1}"][data-y="${koko.dataset.y}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+          
+        }
+        let kUp = () => {
+          if (stopGame) return;
+          let j;
+          let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 - 1}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+        }
+        let kDown = () => {
+          if (stopGame) return;
+          let j;
+          let koko = document.getElementById('koko');
+          j = document.querySelector(`.container span[data-x="${koko.dataset.x}"][data-y="${koko.dataset.y*1 + 1}"]`);
+
+          if (!j) return;
+          meet(j);
+          koko.id = '';
+          j.id = 'koko';
+        }
+
+        $('.pakadim .l').on('click', kLeft);
+        $('.pakadim .r').on('click', kRight);
+        $('.pakadim .u').on('click', kUp);
+        $('.pakadim .d').on('click', kDown);
+        
+        document.addEventListener('keydown', (e) => {
+          switch (e.key) {
+            case 'ArrowUp':
+              kUp();
+              break;
+            case 'ArrowDown':
+              kDown();
+              break;
+            case 'ArrowRight':
+              kRight();
+              break;
+            case 'ArrowLeft':
+              kLeft();
+              break;
+          }
+        })
+      }
+      $(() => {
+        startUp();
+      });
+    </script>
+  </body>
+</html>
